@@ -2,10 +2,20 @@ package main
 
 import "fmt"
 
-func Hello(name string) string {
-	return "Hello, " + name
+const prefixGrettings = "Hello, "
+
+func Hello(name string, language string) string {
+	if name == "" {
+        name = "World"
+	}
+	
+	if language == "spanish" {
+		return "Hola, " + name
+	}
+
+	return prefixGrettings + name
 }
 
 func main() {
-	fmt.Println(Hello("Marcos"))
+	fmt.Println(Hello("Marcos", ""))
 }
