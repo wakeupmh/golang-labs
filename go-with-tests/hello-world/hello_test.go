@@ -32,4 +32,10 @@ func TestHello(t *testing.T) {
 		verifyMessage(t, result, expect)
 	})
 	
+	t.Run("should return Hello in french", func(t *testing.T) { 
+		result := Hello("Marcos", "french")
+		expect := "Bonjour, Marcos"
+
+		verifyMessage(t, result, expect)
+	})
 }
