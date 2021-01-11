@@ -3,8 +3,9 @@ package main
 import "testing"
 
 func TestHello(t *testing.T) {
-	result := Hello()
-	expect := "Hello, world!"
+	name := "Marcos"
+	result := Hello(name)
+	expect := "Hello, " + name 
 
 	if(result != expect) {
 		t.Errorf("result: '%s', expect: '%s'", result, expect)
