@@ -31,3 +31,23 @@ func TestAlphabeticOrder(t *testing.T) {
 	})
 	
 }
+
+func TestContainsWords(t *testing.T) {
+	t.Run("should return true if contains words", func(t *testing.T) {
+		contains := ContainsWord("Hello", "e")
+		expect := true
+
+		if contains != expect {
+			t.Errorf("expect '%t' but got '%t'", expect, contains)
+		}
+	})
+
+	t.Run("should return true if contains words", func(t *testing.T) {
+		contains := ContainsWord("Hello", "x")
+		expect := false
+
+		if contains != expect {
+			t.Errorf("expect '%t' but got '%t'", expect, contains)
+		}
+	})
+}
