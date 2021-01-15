@@ -16,3 +16,11 @@ func SumAll(numsToSum ...[]int) (result []int) {
 	return
 }
 
+func SumRest(numsToSum ...[]int) (result []int) {
+	for _, numbers := range numsToSum {
+		rest := numbers[1:]
+		result = append(result, Sum(rest))
+	}
+
+	return 
+}

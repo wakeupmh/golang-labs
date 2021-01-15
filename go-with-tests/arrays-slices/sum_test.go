@@ -26,4 +26,13 @@ func TestSum(t *testing.T) {
 
 	})
 
+	t.Run("should sum the rest", func(t *testing.T) {
+		sum := SumRest([]int{1,2}, []int{0,9})
+		expect := []int{2, 9}
+
+		if !reflect.DeepEqual(sum, expect) {
+			t.Errorf("expected '%v' but got '%v'", expect, sum)
+		}
+	})
+
 }
