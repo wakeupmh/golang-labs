@@ -6,6 +6,13 @@ import (
 )
 
 func TestSum(t *testing.T) {
+	verifySums := func(t *testing.T, result, expected []int) {
+		t.Helper()
+		if !reflect.DeepEqual(result, expected) {
+			t.Errorf("expected '%d' but got '%d'", expected, result)
+		}
+	}
+
 	t.Run("should sum a collection with any size", func(t *testing.T) {
 		numbers := []int{1, 2, 3}
 		sum := Sum(numbers)
@@ -20,9 +27,7 @@ func TestSum(t *testing.T) {
 		sum := SumAll([]int{1,2}, []int{0,9})
 		expect := []int{3, 9}
 
-		if !reflect.DeepEqual(sum, expect) {
-			t.Errorf("expected '%v' but got '%v'", expect, sum)
-		}
+		verifySums(t, sum, expect)
 
 	})
 
@@ -30,18 +35,6 @@ func TestSum(t *testing.T) {
 		sum := SumRest([]int{1,2}, []int{0,9})
 		expect := []int{2, 9}
 
-		if !reflect.DeepEqual(sum, expect) {
-			t.Errorf("expected '%v' but got '%v'", expect, sum)
-		}
+		verifySums(t, sum, expect)
 	})
-
-	t.Run("should sum the rest securely", func(t *testing.T) {
-		sum := SumRest([]int{}, []int{3,4,5})
-		expect := []int{0, 9}
-
-		if !reflect.DeepEqual(sum, expect) {
-			t.Errorf("expected '%v' but got '%v'", expect, sum)
-		}
-	})
-
 }
