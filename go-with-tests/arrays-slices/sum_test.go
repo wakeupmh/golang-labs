@@ -37,4 +37,11 @@ func TestSum(t *testing.T) {
 
 		verifySums(t, sum, expect)
 	})
+
+	t.Run("should sum the rest securely", func(t *testing.T) {
+		sum := SumRest([]int{}, []int{3, 4, 5})
+		expect := []int{0, 9}
+
+		verifySums(t, sum, expect)
+	})
 }
