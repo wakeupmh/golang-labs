@@ -18,8 +18,12 @@ func SumAll(numsToSum ...[]int) (result []int) {
 
 func SumRest(numsToSum ...[]int) (result []int) {
 	for _, numbers := range numsToSum {
-		rest := numbers[1:]
-		result = append(result, Sum(rest))
+		if len(numbers) == 0 {
+			result = append(result, 0)
+		} else {
+			rest := numbers[1:]
+			result = append(result, Sum(rest))
+		}
 	}
 
 	return 
