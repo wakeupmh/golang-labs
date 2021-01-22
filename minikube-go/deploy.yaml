@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/name: load-balancer-hello-server
+  name: hello-server
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: load-balancer-hello-server
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: load-balancer-hello-server
+    spec:
+      containers:
+      - image: hello-server:latest
+        name: hello-server
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 8080
