@@ -50,8 +50,20 @@ func TestSearches(t *testing.T) {
 		dictionary := Dictionary{}
 		word := "test"
 		definition := "this is a test"
-		dictionary.Add("test", "this is a test")
+		err := dictionary.Add("test", "this is a test")
 
+		assertError(t, err, nil)
 		assertDefinition(t, dictionary, word, definition)
 	})
+
+	t.Run("should retunr an existing word error", func(t *testing.T) {
+		word := "test"
+		definition := "this is just a test"
+		dictionary := Dictionary{word: definition}
+		err := dictionary.Add(word, "new test")
+
+		assertError(t, err, ErrWordExists)
+		assertDefinition(t, dictionary, word, definition)
+	})
+
 }
