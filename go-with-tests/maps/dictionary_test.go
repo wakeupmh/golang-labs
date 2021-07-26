@@ -18,6 +18,19 @@ func assertError(t testing.TB, got, expect error) {
 	}
 }
 
+func assertDefinition(t testing.TB, dictionary Dictionary, word, definition string) {
+	t.Helper()
+
+	got, err := dictionary.Search(word)
+	if err != nil {
+		t.Fatal("should find added word:", err)
+	}
+
+	if definition != got {
+		t.Errorf("got %q want %q", got, definition)
+	}
+}
+
 func TestSearches(t *testing.T) {
 	dictionary := Dictionary{"test": "this is a test"}
 
@@ -31,5 +44,14 @@ func TestSearches(t *testing.T) {
 	t.Run("should return an error for a unknown word", func(t *testing.T) {
 		_, got := dictionary.Search("unknown")
 		assertError(t, got, ErrNotFound)
+	})
+
+	t.Run("should add an item correctly", func(t *testing.T) {
+		dictionary := Dictionary{}
+		word := "test"
+		definition := "this is a test"
+		dictionary.Add("test", "this is a test")
+
+		assertDefinition(t, dictionary, word, definition)
 	})
 }
