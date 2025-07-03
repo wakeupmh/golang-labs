@@ -7,6 +7,7 @@ import (
 	"strconv"       
 
 	"github.com/gin-gonic/gin" 
+	"github.com/go-playground/validator/v10"
 
 	"my-books/models" 
 )
@@ -80,6 +81,13 @@ func (bh *BookHandler) CreateBook(c *gin.Context) {
 		return
 	}
 
+	validate := validator.New()
+	if err := validate.Struct(book); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "validation error: " + err.Error()})
+		log.Printf("validation error: %v", err)
+		return
+	}
+
 	result, err := bh.DB.Exec("INSERT INTO books (title, author, year) VALUES (?, ?, ?)", book.Title, book.Author, book.Year)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "error creating book"})
@@ -110,6 +118,13 @@ func (bh *BookHandler) UpdateBook(c *gin.Context) {
 	if err := c.ShouldBindJSON(&book); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid JSON: " + err.Error()})
 		log.Printf("error decoding JSON: %v", err)
+		return
+	}
+
+	validate := validator.New()
+	if err := validate.Struct(book); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "validation error: " + err.Error()})
+		log.Printf("validation error: %v", err)
 		return
 	}
 
