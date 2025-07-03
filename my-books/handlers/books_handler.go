@@ -1,15 +1,16 @@
-package handlers 
+package handlers
 
 import (
-	"database/sql"  
-	"log"           
-	"net/http"      
-	"strconv"       
+	"database/sql"
+	"fmt"
+	"log"
+	"net/http"
+	"strconv"
 
-	"github.com/gin-gonic/gin" 
+	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
 
-	"my-books/models" 
+	"my-books/models"
 )
 
 type BookHandler struct {
@@ -81,10 +82,7 @@ func (bh *BookHandler) CreateBook(c *gin.Context) {
 		return
 	}
 
-	validate := validator.New()
-	if err := validate.Struct(book); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "validation error: " + err.Error()})
-		log.Printf("validation error: %v", err)
+	if schemaValidation(c, book) {
 		return
 	}
 
@@ -121,10 +119,7 @@ func (bh *BookHandler) UpdateBook(c *gin.Context) {
 		return
 	}
 
-	validate := validator.New()
-	if err := validate.Struct(book); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "validation error: " + err.Error()})
-		log.Printf("validation error: %v", err)
+	if schemaValidation(c, book) {
 		return
 	}
 
@@ -177,4 +172,32 @@ func (bh *BookHandler) DeleteBook(c *gin.Context) {
 	}
 
 	c.Status(http.StatusNoContent) 
+}
+
+func schemaValidation(c *gin.Context, book models.Book) bool {
+	validate := validator.New()
+	if err := validate.Struct(book); err != nil {
+		if validationErrors, ok := err.(validator.ValidationErrors); ok {
+			var errorMessages []string
+			for _, fieldErr := range validationErrors {
+				errorMessage := fmt.Sprintf("field '%s' is invalid. Rule: '%s'", fieldErr.Field(), fieldErr.Tag())
+				switch fieldErr.Tag() {
+				case "required":
+					errorMessage = fmt.Sprintf("field '%s' is required.", fieldErr.Field())
+				case "min":
+					errorMessage = fmt.Sprintf("field '%s' must have a minimum value of %s.", fieldErr.Field(), fieldErr.Param())
+				case "max":
+					errorMessage = fmt.Sprintf("field '%s' must have a maximum value of %s.", fieldErr.Field(), fieldErr.Param())
+				}
+				errorMessages = append(errorMessages, errorMessage)
+			}
+			c.JSON(http.StatusBadRequest, gin.H{"errors": errorMessages})
+		} else {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "validation error: " + err.Error()})
+		}
+		log.Printf("validation error: %v", err)
+		return true
+	}
+
+	return false
 }
